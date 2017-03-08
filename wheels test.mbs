@@ -1,4 +1,6 @@
+
 '2017 MRDC Mecanum Wheel drive code
+dim mult as integer
 top:
 
 'Get the PWM value from the R/C reciever.
@@ -18,28 +20,32 @@ if (hor1 = 0 or vert1 = 0 or hor2 = 0 or vert2 = 0)
 end if
 
 'Ajust the command values to be zeroed, 1500 PWM is no motion
-V1 = hor2 - 1500
+V1 = hor1 - 1500
 V2 = vert1 - 1500
 V3 = hor2 - 1500
 
-'Speed multiplier
-if vert2 > 1800
-	mult = 1.5 'NOS
-elseif vert2 < 1200
-	mult = .5 'Precision
-end if
+
 
 
 ApplyCommand:
-
+'Speed multiplier
+'if vert2 > 1800
+'	mult = 1.5 'NOS
+'elseif vert2 < 1200
+'	mult = .5 'Precision
+'else 
+'	mult = 1 
+'end if
 'Set the motor commands to go forward or back depending on the R/C controller position
 if vert1 < 1450
+	V2 = vert1 - 1500
 	'_G = turn on motor
 	'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
 	'The motors we are using should only be run at about 500 max speed
 	setcommand(_G,1,V2 * mult)
 	setcommand(_G,2,V2 * mult)
 elseif vert1 > 1550
+	V2 = vert1 - 1500
 	setcommand(_G,1,V2 * mult)
 	setcommand(_G,2,V2 * mult)
 else
@@ -50,9 +56,11 @@ end if
 
 'Set the motor commands to strafe to the right or left
 if hor1 < 1450
+	V1 = hor1 - 1500
 	setcommand(_G,1,V1 * mult)
 	setcommand(_G,2,-V1 * mult)
 elseif hor1 > 1550
+	V1 = hor1 - 1500
 	setcommand(_G,1,-V1 * mult)
 	setcommand(_G,2,V1 * mult)
 else 
