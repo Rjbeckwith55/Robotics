@@ -49,7 +49,7 @@ elseif hor1 < minpwm
 	hor1 = minpwm
 elseif hor2 < minpwm
 	hor2 = minpwm
-elseif hor2 < maxpwm
+elseif hor2 > maxpwm
 	hor2 = maxpwm
 end if
 
