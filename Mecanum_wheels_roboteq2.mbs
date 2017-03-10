@@ -52,7 +52,13 @@ end if
 '_G = turn on motor
 'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
 if switch1 < minpwm
-	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
+	if hor2 < threshold1
+		setcommand(_G,1,V3 * 2)
+		setcommand(_G,2,V3 * 2)
+	elseif hor2 > threshold2
+		setcommand(_G,1,V3 * 2)
+		setcommand(_G,2,V3 * 2)
+	elseif hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
 		setcommand(_G,1,V1 * 2)
 		setcommand(_G,2,-V1 * 2)
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
@@ -64,19 +70,20 @@ if switch1 < minpwm
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
 		setcommand(_G,1,V2 * 2)
 		setcommand(_G,2,V2 * 2)
-	elseif hor2 < threshold1
-		setcommand(_G,1,V3 * 2)
-		setcommand(_G,2,V3 * 2)
-	elseif hor2 > threshold2
-		setcommand(_G,1,V3 * 2)
-		setcommand(_G,2,V3 * 2)
+	
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
 		setcommand(_G,1,0)
 	end if
 elseif switch1 > maxpwm
-	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
+	if hor2 < threshold1
+		setcommand(_G,1,-V3)
+		setcommand(_G,2,-V3)
+	elseif hor2 > threshold2
+		setcommand(_G,1,-V3)
+		setcommand(_G,2,-V3)
+	elseif hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
 		setcommand(_G,1,V1)
 		setcommand(_G,2,-V1)
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
@@ -88,12 +95,7 @@ elseif switch1 > maxpwm
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
 		setcommand(_G,1,V2)
 		setcommand(_G,2,V2)
-	elseif hor2 < threshold1
-		setcommand(_G,1,-V3)
-		setcommand(_G,2,-V3)
-	elseif hor2 > threshold2
-		setcommand(_G,1,-V3)
-		setcommand(_G,2,-V3)
+	
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
