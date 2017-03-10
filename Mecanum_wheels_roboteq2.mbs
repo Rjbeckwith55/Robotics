@@ -12,7 +12,7 @@ hor1 = getvalue(_PI, 1) ' right stick left/right
 vert1 = getvalue(_PI, 2) ' right stick up/down
 switch1 = getvalue(_PI, 4) ' back left toggle switch
 hor2 = getvalue(_PI, 3) ' left stick left/right
-
+vert2 = getvalue(_PI, 5) 'Up down on the left stick 
 
 '1500 pwm is zero (no axis on controller moved)-set max and min pwm
 maxpwm = 1900
@@ -27,7 +27,7 @@ V2 = vert1 - 1500
 V3 = hor2 - 1500
 
 'Check to see if the channels are plugged in and the controller is recieving properly.
-if (hor1 = 0 or hor2 = 0 or vert1 = 0)
+if (hor1 = 0 or hor2 = 0 or vert1 = 0 or vert2 > 1900)
 	V1 = 0
 	V2 = 0
 	V3 = 0

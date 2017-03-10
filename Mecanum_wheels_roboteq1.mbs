@@ -12,7 +12,7 @@ hor1 = getvalue(_PI, 1) ' right stick left/right
 vert1 = getvalue(_PI, 2) ' right stick up/down
 switch1 = getvalue(_PI, 4) ' back left toggle switch
 hor2 = getvalue(_PI, 3) ' left stick left/right
-
+vert2 = getvalue(_PI,5)
 
 '1500 pwm is zero (no axis on controller moved)-set max and min pwm
 maxpwm = 1900
@@ -27,7 +27,7 @@ V2 = vert1 - 1500
 V3 = hor2 - 1500
 
 'Check to see if the channels are plugged in and the controller is recieving properly.
-if (hor1 = 0 or hor2 = 0 or vert1 = 0)
+if (hor1 = 0 or hor2 = 0 or vert1 = 0 or vert2 > 1900)
 	V1 = 0
 	V2 = 0
 	V3 = 0
@@ -51,19 +51,19 @@ end if
 'Set the motor commands to strafe to the right or left
 '_G = turn on motor
 'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
-if switch1 < minpwm
+if switch1 >maxpwm
 	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
+		setcommand(_G,1,-V1 * 2)
+		setcommand(_G,2,V1 * 2)
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
+		setcommand(_G,1,-V1 * 2)
+		setcommand(_G,2,V1 * 2)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 * 2)
-		setcommand(_G,2,V2 * 2)
+		setcommand(_G,1,-V2 * 2)
+		setcommand(_G,2,-V2 * 2)
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,V2 * 2)
-		setcommand(_G,2,V2 * 2)
+		setcommand(_G,1,-V2 * 2)
+		setcommand(_G,2,-V2 * 2)
 	elseif hor2 < threshold1
 		setcommand(_G,1,V3 * 2)
 		setcommand(_G,2,V3 * 2)
@@ -75,19 +75,19 @@ if switch1 < minpwm
 		setcommand(_G,2,0)
 		setcommand(_G,1,0)
 	end if
-elseif switch1>maxpwm
+elseif switch1<minpwm
 	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
+		setcommand(_G,1,-V1)
+		setcommand(_G,2,V1)
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
+		setcommand(_G,1,-V1)
+		setcommand(_G,2,V1)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2)
-		setcommand(_G,2,V2)
+		setcommand(_G,1,-V2)
+		setcommand(_G,2,-V2)
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,V2)
-		setcommand(_G,2,V2)
+		setcommand(_G,1,-V2)
+		setcommand(_G,2,-V2)
 	elseif hor2 < threshold1
 		setcommand(_G,1,V3)
 		setcommand(_G,2,V3)
