@@ -26,6 +26,7 @@ V1 = hor1 - 1500
 V2 = vert1 - 1500
 V3 = hor2 - 1500
 
+
 'Check to see if the channels are plugged in and the controller is recieving properly.
 'When the tactic reciever turns off the vert2 channel goes to a value of greater than 1900
 'when this happens set the motor powers to zero 
@@ -74,7 +75,6 @@ if switch1 < minpwm 'Turbo
 	elseif vert1 > threshold2 and abs(V2)>abs(V1) 'backwards
 		setcommand(_G,1,-V2 * 2)
 		setcommand(_G,2,-V2 * 2)
-	
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
@@ -82,25 +82,18 @@ if switch1 < minpwm 'Turbo
 	end if
 
 elseif switch1 > maxpwm 'normal speed
-	if hor2 < threshold1
-		setcommand(_G,1,-V3)
-		setcommand(_G,2,-V3)
-	elseif hor2 > threshold2
-		setcommand(_G,1,-V3)
-		setcommand(_G,2,-V3)
-	elseif hor1 < threshold1 and abs(V1) > abs(V2)
+	if hor1 < threshold1 and abs(V1) > abs(V2)
 		setcommand(_G,1,-V1)
 		setcommand(_G,2,V1)
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 
 		setcommand(_G,1,-V1)
 		setcommand(_G,2,V1)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,-V2)
-		setcommand(_G,2,-V2)
+		setcommand(_G,1,-V2 + (V3/2*-1))
+		setcommand(_G,2,-V2 + (V3/2*-1))
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,-V2)
-		setcommand(_G,2,-V2)
-	
+		setcommand(_G,1,-V2 + (V3/2))
+		setcommand(_G,2,-V2 + (V3/2))
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)

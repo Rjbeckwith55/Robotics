@@ -1,5 +1,6 @@
-
-'2017 MRDC Mecanum Wheel drive code
+'2017 MRDC Mecanum Wheel drive code for roboteq2
+'Controls 2 of the 4 motors for the mecanum drive
+'There are more comments on the roboteq1 version
 dim maxpwm as integer
 dim minpwm as integer
 dim moving as boolean
