@@ -89,11 +89,11 @@ elseif switch1 > maxpwm 'normal speed
 		setcommand(_G,1,-V1)
 		setcommand(_G,2,V1)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,-V2 + (V3/2*-1))
-		setcommand(_G,2,-V2 + (V3/2*-1))
-	elseif vert1 > threshold2 and abs(V2)>abs(V1)
 		setcommand(_G,1,-V2 + (V3/2))
 		setcommand(_G,2,-V2 + (V3/2))
+	elseif vert1 > threshold2 and abs(V2)>abs(V1)
+		setcommand(_G,1,-V2 - (V3/2))
+		setcommand(_G,2,-V2 - (V3/2))
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)

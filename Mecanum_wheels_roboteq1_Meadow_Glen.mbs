@@ -1,9 +1,7 @@
-'2017 MRDC Mecanum Wheel drive code for roboteq2
+'2017 MRDC Mecanum Wheel drive code for roboteq1
 'Controls 2 of the 4 motors for the mecanum drive
-'There are more comments on the roboteq1 version
 dim maxpwm as integer
 dim minpwm as integer
-dim moving as boolean
 dim mult as integer
 top:
 
@@ -13,11 +11,12 @@ hor1 = getvalue(_PI, 1) ' right stick left/right
 vert1 = getvalue(_PI, 2) ' right stick up/down
 switch1 = getvalue(_PI, 4) ' back left toggle switch
 hor2 = getvalue(_PI, 3) ' left stick left/right
-vert2 = getvalue(_PI, 5) 'Up down on the left stick 
+vert2 = getvalue(_PI,5) ' left stick up/down
 
 '1500 pwm is zero (no axis on controller moved)-set max and min pwm
 maxpwm = 1900
 minpwm = 1100
+
 'set threshold pwm (Won't move unless |value|>50 above zero (1500pwm))
 threshold2 = 1550
 threshold1 = 1450
@@ -28,13 +27,16 @@ V2 = vert1 - 1500
 V3 = hor2 - 1500
 
 'Check to see if the channels are plugged in and the controller is recieving properly.
+'When the tactic reciever turns off the vert2 channel goes to a value of greater than 1900
+'when this happens set the motor powers to zero 
 if (hor1 = 0 or hor2 = 0 or vert1 = 0 or vert2 > 1900)
 	V1 = 0
 	V2 = 0
 	V3 = 0
 end if
 
-'Set limits to the pwm
+'Set limits to the pwm because the max and min positions on the controller
+'doesn't output the same pwm values
 if vert1 > maxpwm
 	vert1 = maxpwm
 elseif vert1 < minpwm
@@ -49,51 +51,61 @@ elseif hor2 > maxpwm
 	hor2 = maxpwm
 end if
 
-'Set the motor commands to strafe to the right or left
-'_G = turn on motor
-'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
-if switch1 < minpwm
-	if hor2 < threshold1
+'The switch toggles between speed modes 
+if switch1 < minpwm 'Turbo
+	'Set the motor commands to strafe to the right or left
+	'_G = turn on motor
+	'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
+	if hor2 < threshold1 'Turn right
 		setcommand(_G,1,-V3 * 2)
 		setcommand(_G,2,-V3 * 2)
-	elseif hor2 > threshold2
+	elseif hor2 > threshold2 'Turn left
 		setcommand(_G,1,-V3 * 2)
 		setcommand(_G,2,-V3 * 2)
-	elseif hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
-	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
-	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 * 2)
-		setcommand(_G,2,V2 * 2)
-	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,V2 * 2)
-		setcommand(_G,2,V2 * 2)
+	elseif hor1 < threshold1 and abs(V1) > abs(V2) 'Strafe left
+		setcommand(_G,1,-V1 * 2)
+		setcommand(_G,2,V1 * 2)
+	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'Strafe right
+		setcommand(_G,1,-V1 * 2)
+		setcommand(_G,2,V1 * 2)
+	elseif vert1 < threshold1 and abs(V2) > abs(V1) 'foward 
+		setcommand(_G,1,-V2 * 2)
+		setcommand(_G,2,-V2 * 2)
+	elseif vert1 > threshold2 and abs(V2)>abs(V1) 'backwards
+		setcommand(_G,1,-V2 * 2)
+		setcommand(_G,2,-V2 * 2)
 	
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
 		setcommand(_G,1,0)
 	end if
-elseif switch1 > maxpwm
-	elseif hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
-	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
+
+elseif switch1 > maxpwm 'normal speed
+	if hor2 < threshold1
+		setcommand(_G,1,-V3/2)
+		setcommand(_G,2,-V3/2)
+	elseif hor2 > threshold2
+		setcommand(_G,1,-V3/2)
+		setcommand(_G,2,-V3/2)
+	elseif hor1 < threshold1 and abs(V1) > abs(V2)
+		setcommand(_G,1,-V1/2)
+		setcommand(_G,2,V1/2)
+	elseif hor1 > threshold2 and abs(V1) > abs(V2) 
+		setcommand(_G,1,-V1/2)
+		setcommand(_G,2,V1/2)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 + (V3/2))
-		setcommand(_G,2,V2 + (V3/2))
+		setcommand(_G,1,-V2/2)
+		setcommand(_G,2,-V2/2)
 	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,V2 - (V3/2))
-		setcommand(_G,2,V2 - (V3/2))
+		setcommand(_G,1,-V2/2)
+		setcommand(_G,2,-V2/2)
+	
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
 		setcommand(_G,1,0)
 	end if
 end if
+
 goto top
