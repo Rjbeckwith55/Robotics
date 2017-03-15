@@ -13,16 +13,16 @@ hor1 = getvalue(_PI, 1) ' right stick left/right
 vert1 = getvalue(_PI, 2) ' right stick up/down
 switch1 = getvalue(_PI, 4) ' back left toggle switch
 hor2 = getvalue(_PI, 3) ' left stick left/right
-vert2 = getvalue(_PI, 5) 'Up down on the left stick 
+vert2 = getvalue(_PI, 5) ' Up down on the left stick 
 
 '1500 pwm is zero (no axis on controller moved)-set max and min pwm
 maxpwm = 1900
 minpwm = 1100
-'set threshold pwm (Won't move unless |value|>50 above zero (1500pwm))
+'set threshold pwm (Won't move unless |sitck value-center|>50 (center=1500pwm))
 threshold2 = 1550
 threshold1 = 1450
 
-'Adjust the command values to be zeroed, 1500 PWM is the center of the R/C controller
+'Center the command values (V1, V2, V3), 1500 PWM is the center of the R/C controller
 V1 = hor1 - 1500
 V2 = vert1 - 1500
 V3 = hor2 - 1500
