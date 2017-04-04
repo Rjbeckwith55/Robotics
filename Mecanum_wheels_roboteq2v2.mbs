@@ -85,10 +85,10 @@ elseif switch1 > maxpwm
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
 		setcommand(_G,1,V1)
 		setcommand(_G,2,-V1)
-	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 + (V3/2))
-		setcommand(_G,2,V2 + (V3/2))
-	elseif vert1 > threshold2 and abs(V2)>abs(V1)
+	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
+		setcommand(_G,1,V2 - (V3/2))
+		setcommand(_G,2,V2 - (V3/2))
+	elseif vert1 > threshold2 and abs(V2) > abs(V1) or hor2 > threshold2
 		setcommand(_G,1,V2 - (V3/2))
 		setcommand(_G,2,V2 - (V3/2))
 	else
