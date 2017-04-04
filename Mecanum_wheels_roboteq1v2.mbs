@@ -56,7 +56,7 @@ end if
 if switch1 < minpwm 'Turbo
 	'Set the motor commands to strafe to the right or left
 	'_G = turn on motor
-	'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
+	'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(-1000 to 1000))
 	if hor2 < threshold1 'Turn right
 		setcommand(_G,1,-V3 * 2)
 		setcommand(_G,2,-V3 * 2)
@@ -88,12 +88,12 @@ elseif switch1 > maxpwm 'normal speed
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 
 		setcommand(_G,1,-V1)
 		setcommand(_G,2,V1)
-	elseif vert1 < threshold1 and abs(V2) > abs(V1)
+	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
 		setcommand(_G,1,-V2 + (V3/2))
 		setcommand(_G,2,-V2 + (V3/2))
-	elseif vert1 > threshold2 and abs(V2)>abs(V1)
-		setcommand(_G,1,-V2 - (V3/2))
-		setcommand(_G,2,-V2 - (V3/2))
+	elseif vert1 > threshold2 and abs(V2) > abs(V1) or hor2 > threshold2
+		setcommand(_G,1,-V2 + (V3/2))
+		setcommand(_G,2,-V2 + (V3/2))
 	else
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
