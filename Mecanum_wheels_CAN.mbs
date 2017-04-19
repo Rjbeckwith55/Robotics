@@ -45,6 +45,7 @@ end if
 
 maxpwm = 1900
 minpwm = 1100
+MaxSpeed = (1900-1100)/2
 
 if vert1 > maxpwm
 	vert1 = maxpwm
@@ -75,9 +76,9 @@ if vert1 <> 0
          RadioTh = (Atan((vert1 * 1000) / hor1)) / 10 ' atan takes input * 1000 and returns angle in degrees * 10
          if vert1 > 0 and hor1 < 0
                  RadioTh = 180 - RadioTh
-         else if vert1 < 0 and hor1 < 0
+         elseif vert1 < 0 and hor1 < 0
                  RadioTh += 180
-         else if vert1 < 0 and hor1 > 0
+         elseif vert1 < 0 and hor1 > 0
                  RadioTh = 360 - RadioTh
          end if
 else 
@@ -90,7 +91,7 @@ end if
  
 VD = RadioVD
 ThetaD = RadioTh
-VTheta = hor2/400
+VTheta = hor2
  
 ' Uncomment below to check captured values in console
 'print (LR, "\t", FR, "\t", RadioVD, "\t", RadioTh, "\r")
