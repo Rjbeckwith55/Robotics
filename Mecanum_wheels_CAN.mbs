@@ -26,8 +26,9 @@ Top:
 
 ' Capture joystick value
 hor1 = getvalue(_PI, 1) ' right stick left/right
-vert1 = getvalue(_PI, 2)
-hor2 = getvalue(_Pi,3) ' right stick up/down
+
+vert1 = getvalue(_PI, 2) ' right stick up/down
+hor2 = getvalue(_PI, 3)
 
  
 ' Read list of alive RoboCAN nodes
@@ -47,6 +48,7 @@ minpwm = 1100
 ' Centered joystick = 1500. Substract offset to convert to 0 to +/-1000
 ' Change code below to adapt to other radio than spektrum
 
+
 if vert1 > maxpwm
 	vert1 = maxpwm
 elseif vert1 < minpwm
@@ -65,7 +67,6 @@ hor2 = hor2 - 1500
 hor1 = hor1 - 1500
 vert1 = vert1 - 1500
 
-
  
 ' Compute distance of joystick from center position in any direction
 RadioVD = (sqrt(vert1 * vert1 + hor1 * hor1)) / 1000 ' sqrt returns result * 1000
@@ -73,6 +74,20 @@ RadioVD = (sqrt(vert1 * vert1 + hor1 * hor1)) / 1000 ' sqrt returns result * 100
 ' Compute angle of X-Y
 if vert1 <> 0
          RadioTh = (Atan((vert1 * 1000) / hor1)) / 10 ' atan takes input * 1000 and returns angle in degrees * 10
+         if vert1 > 0 and hor1 < 0
+                 RadioTh = 180 - RadioTh
+         else if vert1 < 0 and hor1 < 0
+                 RadioTh += 180
+         else if vert1 < 0 and hor1 > 0
+                 RadioTh = 360 - RadioTh
+         end if
+else 
+         if vert1 > 0
+                 RadioTh = 90
+         else
+                 RadioTh = 270
+         end if
+end if
  
 VD = RadioVD
 ThetaD = RadioTh
