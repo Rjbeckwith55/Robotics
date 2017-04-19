@@ -41,12 +41,30 @@ if(hor1 = 0 or vert1 = 0 or CANAlive <> 273)
          V4 = 0
          goto ApplyCommand ' Stop all motors if no radio or no slave
 end if
- 
+
+maxpwm = 1900
+minpwm = 1100
 ' Centered joystick = 1500. Substract offset to convert to 0 to +/-1000
 ' Change code below to adapt to other radio than spektrum
+
+if vert1 > maxpwm
+	vert1 = maxpwm
+elseif vert1 < minpwm
+	vert1 = minpwm
+elseif hor1 > maxpwm
+	hor1 = maxpwm
+elseif hor1 < minpwm
+	hor1 = minpwm
+elseif hor2 < minpwm
+	hor2 = minpwm
+elseif hor2 > maxpwm
+	hor2 = maxpwm
+end if
+
 hor2 = hor2 - 1500
 hor1 = hor1 - 1500
 vert1 = vert1 - 1500
+
 
  
 ' Compute distance of joystick from center position in any direction
