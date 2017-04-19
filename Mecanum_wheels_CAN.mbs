@@ -36,8 +36,9 @@ Top:
 ' Code below is for use on SDC21300 with Specktrum Radio enabled.
 ' Change to _PI to capture from standard RC Radio
 hor1 = getvalue(_PI, 1) ' right stick left/right
-vert1 = getvalue(_PI, 2) ' right stick up/down
-'CCW = getvalue(_PI, 4)
+vert1 = getvalue(_PI, 2)
+hor2 = getvalue(_Pi,3) ' right stick up/down
+
  
 ' Read list of alive RoboCAN nodes
 CANAlive = getvalue(_CL, 1)
@@ -53,20 +54,10 @@ end if
  
 ' Centered joystick = 1500. Substract offset to convert to 0 to +/-1000
 ' Change code below to adapt to other radio than spektrum
-if vert1 < 1500
-  vert1 = (vert1-1500)
-  'if vert1 < 0 vert1 = 0
-elseif vert1 > 1500
-  vert1 = (vert1-1500)
-  'if vert1 > 0 vert1 = 0
-else
-  vert1 = 0
-end if
+hor2 = hor2 - 1500
+hor1 = hor1 - 1500
+vert1 = vert1 - 1500
 
-if hor1 < 1500
-  hor1 = hor1-1500
-elseif hor1 > 1500
-  hor1 = hor1-1500
  
 ' Compute distance of joystick from center position in any direction
 RadioVD = (sqrt(vert1 * vert1 + hor1 * hor1)) / 1000 ' sqrt returns result * 1000
@@ -77,7 +68,7 @@ if vert1 <> 0
  
 VD = RadioVD
 ThetaD = RadioTh
-VTheta = -CCW
+VTheta = hor2
  
 ' Uncomment below to check captured values in console
 'print (LR, "\t", FR, "\t", RadioVD, "\t", RadioTh, "\r")
@@ -87,10 +78,10 @@ if (VD <> PrevVD or ThetaD <> PrevThetaD or VTheta <> PrevVTheta)
  
          ThetaD45 = ThetaD + 45 ' compute once angle + 45 for use in the 4 equations
         
-         V1 = (VD * sin(ThetaD45))/1000 ' sin takes degrees and returns result * 1000
-         V2 = (VD * cos(ThetaD45))/1000
-         V3 = (VD * cos(ThetaD45))/1000
-         V4 = (VD * sin(ThetaD45))/1000
+         V1 = (VD * sin(ThetaD45))/1000 + VTheta ' sin takes degrees and returns result * 1000
+         V2 = (VD * cos(ThetaD45))/1000 - VTheta
+         V3 = (VD * cos(ThetaD45))/1000 + VTheta
+         V4 = (VD * sin(ThetaD45))/1000 - VTheta
         
          ' Uncomment below to view computed speeds in console
          'print (V1,"\t",V2,"\t",V3,"\t",V4,"\r")
