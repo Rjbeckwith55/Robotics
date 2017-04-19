@@ -1,0 +1,6 @@
+can = IsCANNodeAlive(02)
+print(can)
+if can
+	print(can)
+	'SetCANCommand(02, _G, 1, 100)
+end if

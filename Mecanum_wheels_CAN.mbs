@@ -26,9 +26,8 @@ Top:
 
 ' Capture joystick value
 hor1 = getvalue(_PI, 1) ' right stick left/right
-
 vert1 = getvalue(_PI, 2) ' right stick up/down
-hor2 = getvalue(_PI, 3)
+hor2 = getvalue(_PI, 3) ' left stick left/right
 
  
 ' Read list of alive RoboCAN nodes
@@ -43,10 +42,14 @@ if(hor1 = 0 or vert1 = 0 or CANAlive <> 273)
          goto ApplyCommand ' Stop all motors if no radio or no slave
 end if
 
+'Declare variables
 maxpwm = 1900
 minpwm = 1100
+threshold1 = 50
+threshold2 = -50
 MaxSpeed = (1900-1100)/2
 
+'Set the limits to the control sticks
 if vert1 > maxpwm
 	vert1 = maxpwm
 elseif vert1 < minpwm
@@ -67,6 +70,16 @@ hor2 = hor2 - 1500
 hor1 = hor1 - 1500
 vert1 = vert1 - 1500
 
+'Set the controller thresholds
+if hor2 < threshold1 and hor2 > threshold2
+	hor2 = 0
+end if
+if hor1 < threshold1 and hor1 > threshold2
+	hor1 = 0
+end if
+if vert1 < threshold1 and vert1 > threshold2
+	vert1 = 0
+end if
  
 ' Compute distance of joystick from center position in any direction
 RadioVD = (sqrt(vert1 * vert1 + hor1 * hor1)) / 1000 ' sqrt returns result * 1000
@@ -117,11 +130,11 @@ PrevVTheta = VTheta
  
 ApplyCommand:
 ' Apply to local motors
-SetCommand(_G, 1, V1)
+SetCommand(_G, 1, V3)
 SetCommand(_G, 2, V2)
-' Send command to Slave, node 2 on RoboCAN network
-SetCANCommand(2, _G, 1, V3)
-SetCANCommand(2, _G, 2, V4)
+' Send command to Slave, node 1 on RoboCAN network
+SetCANCommand(01, _G, 1,  V1)
+SetCANCommand(01, _G, 2, V4)
  
 wait(10) ' Repeat loop every 10ms / 100Hz
 goto top
