@@ -4,7 +4,6 @@
 dim maxpwm as integer
 dim minpwm as integer
 dim moving as boolean
-dim mult as integer
 
 top:
 
@@ -29,13 +28,14 @@ V2 = vert1 - 1500
 V3 = hor2 - 1500
 
 'Check to see if the channels are plugged in and the controller is recieving properly.
+'Nothing will happen if one of the channels is not recieving properly. (Change this in an actual competition)
 if (hor1 = 0 or hor2 = 0 or vert1 = 0 or vert2 > 1900)
 	V1 = 0
 	V2 = 0
 	V3 = 0
 end if
 
-'Set limits to the pwm
+'Set limits to the pwm -400 to 400
 if vert1 > maxpwm
 	vert1 = maxpwm
 elseif vert1 < minpwm
@@ -67,8 +67,9 @@ if switch1 < minpwm
 		setCANcommand(01,_G,1,-V1 * 2) 
 		setCANcommand(01,_G,2,V1 * 2)
 	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 * 2)
-		setcommand(_G,2,V2 * 2)
+		speedDif = 1000 + (-V2 * 2 - V3)
+		setcommand(_G,1,V2 * 2 - V3)
+		setcommand(_G,2,V2 * 2 - V3)
 		setCANcommand(01,_G,1,-V2 * 2 - V3)
 		setCANcommand(01,_G,2,-V2 * 2 - V3)
 	elseif vert1 > threshold2 and abs(V2) > abs(V1)
@@ -85,15 +86,15 @@ if switch1 < minpwm
 	end if
 elseif switch1 > maxpwm
 	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
-		SetCANCommand(01,_G,1,-V1) 
-		SetCANCommand(01,_G,2,V1)
+		setcommand(_G,1,V1 + (V3/2)) 'Back Left
+		setcommand(_G,2,-V1 + (V3/2)) 'Front Right
+		SetCANCommand(01,_G,1,-V1 + (V3/2)) 'Front Right
+		SetCANCommand(01,_G,2,V1 + (V3/2)) 'Back Right
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1)
-		setcommand(_G,2,-V1)
-		setCancommand(01,_G,1,-V1) 
-		setCancommand(01,_G,2,V1)
+		setcommand(_G,1,V1 + (V3/2))
+		setcommand(_G,2,-V1 + (V3/2))
+		setCancommand(01,_G,1,-V1 + (V3/2)) 
+		setCancommand(01,_G,2,V1 + (V3/2))
 	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
 		setcommand(_G,1,V2 - (V3/2))
 		setcommand(_G,2,V2 - (V3/2))
