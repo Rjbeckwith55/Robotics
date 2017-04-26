@@ -50,67 +50,80 @@ elseif hor2 > maxpwm
 	hor2 = maxpwm
 end if
 
+' set motor commands
+speed = sqrt(hor1 * hor1 + vert1 * vert1)
+theta = atan(1000 * vert1 / hor1) / 10
+
+'  motor positions:
+' slave 2   master 1
+' slave 1   master 2
+
+setcommand(_G,1,speed * cos(theta + 45) - hor1)
+setcommand(_G,2,speed * sin(theta + 45) - hor1)
+SetCANCommand(01,_G,1,speed * cos(theta + 45) + hor1)
+SetCANCommand(01,_G,2,speed * sin(theta + 45) + hor1)
+
 'Set the motor commands to strafe to the right or left
 '_G = turn on motor
 'setcommand(command, motor 1 or motor 2 on the roboteq, speed of the motor(0-1000))
 'SetCANCommand uses can communication wiring to communicate with the slave
 'Wiring goes from CANL to CANL then CANH to CANH then has 2 120 ohm resistors from CANL wires to CANH
-if switch1 < minpwm
-	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
-		SetCANCommand(01,_G,1,-V1 * 2) 
-		SetCANCommand(01,_G,2,V1 * 2)
-	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1 * 2)
-		setcommand(_G,2,-V1 * 2)
-		setCANcommand(01,_G,1,-V1 * 2) 
-		setCANcommand(01,_G,2,V1 * 2)
-	elseif vert1 < threshold1 and abs(V2) > abs(V1)
-		speedDif = 1000 + (-V2 * 2 - V3)
-		setcommand(_G,1,V2 * 2 - V3)
-		setcommand(_G,2,V2 * 2 - V3)
-		setCANcommand(01,_G,1,-V2 * 2 - V3)
-		setCANcommand(01,_G,2,-V2 * 2 - V3)
-	elseif vert1 > threshold2 and abs(V2) > abs(V1)
-		setcommand(_G,1,V2 * 2 - V3)
-		setcommand(_G,1,V2 * 2 - V3)
-		setCANcommand(01,_G,1,-V2 * 2 - V3)
-		setCANcommand(01,_G,2,-V2 * 2 - V3)
-	else
-		'Set motor speed to zero when controller is not being moved.
-		setcommand(_G,2,0)
-		setcommand(_G,1,0)
-		setCANcommand(01,_G,2,0)
-		setCANcommand(01,_G,1,0)
-	end if
-elseif switch1 > maxpwm
-	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1 + (V3/2)) 'Back Left
-		setcommand(_G,2,-V1 + (V3/2)) 'Front Right
-		SetCANCommand(01,_G,1,-V1 + (V3/2)) 'Front Right
-		SetCANCommand(01,_G,2,V1 + (V3/2)) 'Back Right
-	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1 + (V3/2))
-		setcommand(_G,2,-V1 + (V3/2))
-		setCancommand(01,_G,1,-V1 + (V3/2)) 
-		setCancommand(01,_G,2,V1 + (V3/2))
-	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
-		setcommand(_G,1,V2 - (V3/2))
-		setcommand(_G,2,V2 - (V3/2))
-		setCancommand(01,_G,1,-V2 - (V3/2))
-		setCancommand(01,_G,2,-V2 - (V3/2))
-	elseif vert1 > threshold2 and abs(V2) > abs(V1) or hor2 > threshold2
-		setcommand(_G,1,V2 - (V3/2))
-		setcommand(_G,2,V2 - (V3/2))
-		setCANcommand(01,_G,1,-V2 - (V3/2))
-		setCANcommand(01,_G,2,-V2 - (V3/2))
-	else
-		'Set motor speed to zero when controller is not being moved.
-		setcommand(_G,2,0)
-		setcommand(_G,1,0)
-		setCANcommand(01,_G,2,0)
-		setCANcommand(01,_G,1,0)
-	end if
-end if
+'if switch1 < minpwm
+'	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
+'		setcommand(_G,1,V1 * 2)
+'		setcommand(_G,2,-V1 * 2)
+'		SetCANCommand(01,_G,1,-V1 * 2) 
+'		SetCANCommand(01,_G,2,V1 * 2)
+'	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
+'		setcommand(_G,1,V1 * 2)
+'		setcommand(_G,2,-V1 * 2)
+'		setCANcommand(01,_G,1,-V1 * 2) 
+'		setCANcommand(01,_G,2,V1 * 2)
+'	elseif vert1 < threshold1 and abs(V2) > abs(V1)
+'		speedDif = 1000 + (-V2 * 2 - V3)
+'		setcommand(_G,1,V2 * 2 - V3)
+'		setcommand(_G,2,V2 * 2 - V3)
+'		setCANcommand(01,_G,1,-V2 * 2 - V3)
+'		setCANcommand(01,_G,2,-V2 * 2 - V3)
+'	elseif vert1 > threshold2 and abs(V2) > abs(V1)
+'		setcommand(_G,1,V2 * 2 - V3)
+'		setcommand(_G,1,V2 * 2 - V3)
+'		setCANcommand(01,_G,1,-V2 * 2 - V3)
+'		setCANcommand(01,_G,2,-V2 * 2 - V3)
+'	else
+'		'Set motor speed to zero when controller is not being moved.
+'		setcommand(_G,2,0)
+'		setcommand(_G,1,0)
+'		setCANcommand(01,_G,2,0)
+'		setCANcommand(01,_G,1,0)
+'	end if
+'elseif switch1 > maxpwm
+'	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
+'		setcommand(_G,1,V1 + (V3/2)) 'Back Left
+'		setcommand(_G,2,-V1 + (V3/2)) 'Front Right
+'		SetCANCommand(01,_G,1,-V1 + (V3/2)) 'Front Right
+'		SetCANCommand(01,_G,2,V1 + (V3/2)) 'Back Right
+'	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
+'		setcommand(_G,1,V1 + (V3/2))
+'		setcommand(_G,2,-V1 + (V3/2))
+'		setCancommand(01,_G,1,-V1 + (V3/2)) 
+'		setCancommand(01,_G,2,V1 + (V3/2))
+'	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
+'		setcommand(_G,1,V2 - (V3/2))
+'		setcommand(_G,2,V2 - (V3/2))
+'		setCancommand(01,_G,1,-V2 - (V3/2))
+'		setCancommand(01,_G,2,-V2 - (V3/2))
+'	elseif vert1 > threshold2 and abs(V2) > abs(V1) or hor2 > threshold2
+'		setcommand(_G,1,V2 - (V3/2))
+'		setcommand(_G,2,V2 - (V3/2))
+'		setCANcommand(01,_G,1,-V2 - (V3/2))
+'		setCANcommand(01,_G,2,-V2 - (V3/2))
+'	else
+'		'Set motor speed to zero when controller is not being moved.
+'		setcommand(_G,2,0)
+'		setcommand(_G,1,0)
+'		setCANcommand(01,_G,2,0)
+'		setCANcommand(01,_G,1,0)
+'	end if
+'end if
 goto top
