@@ -52,7 +52,21 @@ end if
 
 ' set motor commands
 speed = sqrt(hor1 * hor1 + vert1 * vert1)
-theta = atan(1000 * vert1 / hor1) / 10
+if hor1 = 0 and vert1 >= 0
+	theta = 90
+elseif hor1 = 0 and vert1 < 0
+	theta = 270
+else
+	theta = atan(1000 * vert1 / hor1) / 10
+end if
+
+if hor1 < 0 and vert1 > 0
+	theta += 180
+elseif hor1 < 0 and vert1 < 0
+	theta += 180
+elseif hor1 > 0 and vert1 < 0
+	theta += 360
+end if
 
 '  motor positions:
 ' slave 2   master 1
