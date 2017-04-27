@@ -86,15 +86,15 @@ if switch1 < minpwm
 	end if
 elseif switch1 > maxpwm
 	if hor1 < threshold1 and abs(V1) > abs(V2) 'LEFT
-		setcommand(_G,1,V1 + (V3/2)) 'Back Left
-		setcommand(_G,2,-V1 + (V3/2)) 'Front Right
-		SetCANCommand(01,_G,1,-V1 + (V3/2)) 'Front Right
-		SetCANCommand(01,_G,2,V1 + (V3/2)) 'Back Right
+		setcommand(_G,1,V1 - (V3/2)) 'Back Left
+		setcommand(_G,2,-V1 - (V3/2)) 'Front Right
+		SetCANCommand(01,_G,1,-V1 - (V3/2)) 'Front Right
+		SetCANCommand(01,_G,2,V1 - (V3/2)) 'Back Right
 	elseif hor1 > threshold2 and abs(V1) > abs(V2) 'RIGHT
-		setcommand(_G,1,V1 + (V3/2))
-		setcommand(_G,2,-V1 + (V3/2))
-		setCancommand(01,_G,1,-V1 + (V3/2)) 
-		setCancommand(01,_G,2,V1 + (V3/2))
+		setcommand(_G,1,V1 - (V3/2))
+		setcommand(_G,2,-V1 - (V3/2))
+		setCancommand(01,_G,1,-V1 - (V3/2)) 
+		setCancommand(01,_G,2,V1 - (V3/2))
 	elseif vert1 < threshold1 and abs(V2) > abs(V1) or hor2 < threshold1
 		setcommand(_G,1,V2 - (V3/2))
 		setcommand(_G,2,V2 - (V3/2))
