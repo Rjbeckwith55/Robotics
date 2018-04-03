@@ -1,0 +1,109 @@
+top:
+
+LR = getvalue(_PI, 1) ' RIGHT stick left/right (Left Right)
+FR = getvalue(_PI, 2) ' RIGHT stick up/down (Forward Reverse)
+CCW = getvalue(_PI, 3) ' LEFT stick left/right (Rotation)
+
+switch1 = getvalue(_PI, 4) ' back left TOGGLE switch
+vert2 = getvalue(_PI, 5) ' LEFT stick up/down
+
+'1500 pwm is zero (no axis on controller moved)-set max and min pwm
+maxpwm = 1900
+minpwm = 1100
+'set threshold pwm (Won't move unless |sitck value-center|>50 (center=1500pwm))
+threshold2 = 1550
+threshold1 = 1450
+if(LR = 0 or FR = 0 or CCW = 0 or vert2 > 1900)
+
+         V1 = 0
+
+         V2 = 0
+
+         V3 = 0
+
+         V4 = 0
+
+         goto ApplyCommand ' Stop all motors if no radio or no slave
+end if
+
+if LR < threshold1
+	LR = (LR-1500)*2 'Will give a speed between 0 and -500
+elseif LR>threshold2
+	LR=(LR-1500)*2'Will give a speed between 0 and 500
+else 
+	LR=0
+end if
+
+LR=-LR
+
+if FR < threshold1
+	FR = (FR-1500)*2
+elseif FR > threshold2
+	FR = (FR-1500)*2
+else
+	FR=0
+end if
+
+if CCW < threshold1
+	CCW = (CCW-1500)*2
+elseif CCW > threshold2
+	CCW = (CCW-1500)*2
+else
+	CCW=0
+end if
+
+RadioVD = (sqrt(LR * LR + FR * FR)) / 1000 ' sqrt returns result * 1000
+
+if FR <> 0
+	RadioTh = (atan(LR*1000/FR))/10 'atan does something dumb so you need *1000 /10 
+	if LR>=0 and FR<0
+		RadioTh += 180
+	elseif LR<0 and FR<0
+		RadioTh -=180
+	end if
+elseif LR>0
+	RadioTh = 90
+elseif LR<0
+	RadioTh = -90
+else
+	RadioTh = 0
+end if
+
+VD = RadioVD
+ThetaD = RadioTh
+Vtheta = -CCW
+'print (LR, "\t", FR, "\t", RadioVD, "\t", RadioTh, "\r")
+if (VD <> PrevVD or ThetaD <> PrevThetaD or VTheta <> PrevVTheta)
+	ThetaD45 = ThetaD+45
+	
+	 V1 = (VD * sin(ThetaD45))/1000 + VTheta ' sin takes degrees and returns result * 1000
+
+     V2 = (VD * cos(ThetaD45))/1000 - VTheta
+
+     V3 = (VD * cos(ThetaD45))/1000 + VTheta
+
+     V4 = (VD * sin(ThetaD45))/1000 - VTheta
+end if
+' Apply to local motors
+
+PrevVD = VD
+
+PrevThetaD = ThetaD
+
+PrevVTheta = VTheta
+
+ApplyCommand:
+
+setCommand(_G, 1, V2) 'Motor 1
+
+setCommand(_G, 2, V4) 'Motor 2
+
+' Send command to Slave, node 2 on RoboCAN network
+
+setCANCommand(02, _G, 1, V3) 'Motor 3
+
+setCANCommand(02, _G, 2, V1) 'Motor 4
+
+wait(10)
+
+goto top

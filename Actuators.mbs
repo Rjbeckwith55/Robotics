@@ -1,0 +1,13 @@
+top:
+command = getvalue(_PI,1)
+if command > 1600
+	setcommand(_G,1,1000)
+	setcommand(_G,2,1000)
+elseif command < 1300
+	setcommand(_G,1,-1000)
+	setcommand(_G,2,-1000)
+else
+	setcommand(_G,1,0)
+	setcommand(_G,2,0)
+end if
+goto top

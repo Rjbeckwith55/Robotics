@@ -108,8 +108,8 @@ elseif switch1 > maxpwm
 		'Set motor speed to zero when controller is not being moved.
 		setcommand(_G,2,0)
 		setcommand(_G,1,0)
-		setCANcommand(01,_G,2,0)
-		setCANcommand(01,_G,1,0)
+		setCANcommand(02,_G,2,0)
+		setCANcommand(02,_G,1,0)
 	end if
 end if
 goto top
